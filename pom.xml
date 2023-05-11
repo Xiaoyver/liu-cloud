@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.liu</groupId>
+    <artifactId>liu-cloud</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>cloud-common</module>
+        <module>cloud-user</module>
+        <module>cloud-order</module>
+        <module>cloud-api-gateway</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- 整体项目版本 -->
+        <revision>0.0.1-SNAPSHOT</revision>
+        <!-- 引入外部-主依赖 -->
+        <spring.boot.version>2.7.3</spring.boot.version>
+        <spring.cloud.version>2021.0.5</spring.cloud.version>
+        <alibaba.cloud.version>2021.0.5.0</alibaba.cloud.version>
+        <!-- 引入外部-相关依赖(像mybatis-plus,redission,rabbitmq等等,都可以在这里引入) -->
+        <lombok.version>1.18.26</lombok.version>
+        <hutool.all.version>5.8.18</hutool.all.version>
+        <knife4j.spring.boot.version>3.0.3</knife4j.spring.boot.version>
+        <!--跳过单元测试-->
+        <skipTests>true</skipTests>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <!-- 自定义模块  -->
+            <dependency>
+                <groupId>com.liu.common</groupId>
+                <artifactId>cloud-common</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.liu.user</groupId>
+                <artifactId>cloud-user</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.liu.order</groupId>
+                <artifactId>cloud-order</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.liu.gateway</groupId>
+                <artifactId>cloud-api-gateway</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- Spring-Boot 版本 -->
+            <!--https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies/2.3.3.RELEASE-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Spring-Cloud 版本 -->
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Alibaba-Cloud 版本 -->
+            <!--https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-alibaba-dependencies/2.2.1.RELEASE-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${alibaba.cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- 工具类 -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.all.version}</version>
+            </dependency>
+
+            <!--接口文档依赖-->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <version>${knife4j.spring.boot.version}</version>
+            </dependency>
+
+            <!-- 一下内容不打入Jar包 -->
+            <!-- lombok 仅仅开始阶段使用,scope=provided,说明它只在编译阶段生效,不需要打入包中-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+    <build>
+        <plugins>
+            <!-- 打包插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                    <annotationProcessorPaths>
+                        <!-- Lombok 在编译时会通过这个插件生成代码 -->
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <!-- revision控制 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.3.0</version>
+                <configuration>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/**</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
+    <!--分别设置开发，测试，生产环境-->
+    <!--打包命令  mvn clean package -Dprofiles.active=pro -->
+    <profiles>
+        <!-- 开发环境 默认打包使用开发环境 -->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <environment>dev</environment>
+            </properties>
+        </profile>
+        <!-- 测试环境 -->
+        <profile>
+            <id>test</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <environment>test</environment>
+            </properties>
+        </profile>
+        <!-- 生产环境 -->
+        <profile>
+            <id>pro</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <environment>pro</environment>
+            </properties>
+        </profile>
+    </profiles>
+</project>
