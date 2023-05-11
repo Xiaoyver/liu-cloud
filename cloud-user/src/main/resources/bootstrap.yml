@@ -1,0 +1,51 @@
+spring:
+  # 环境配置
+  profiles:
+    active: @environment@
+  # 应用配置
+  application:
+    name: liu-order-service
+
+#********** 上面的不需要环境区分 **********#
+#**********下面是环境区分,不同环境不同配置 **********#
+#开发环境
+---
+spring:
+  profiles:
+    include: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.11.251:8848
+        file-extension: yaml #文件拓展格式
+        namespace: 33e90e1d-4a78-414c-8dea-28893135dd5a
+        username: nacos
+        password: nacos
+
+#测试环境
+---
+spring:
+  profiles:
+    include: test
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.11.251:8848
+        file-extension: yaml #文件拓展格式
+        namespace: 33e90e1d-4a78-414c-8dea-28893135dd5a
+        username: nacos
+        password: nacos
+
+#正式环境
+---
+spring:
+  profiles:
+    include: pro
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.11.251:8848
+        file-extension: yaml #文件拓展格式
+        namespace: 33e90e1d-4a78-414c-8dea-28893135dd5a
+        username: nacos
+        password: nacos

@@ -1,0 +1,32 @@
+#server:
+#  port: 9000
+#
+#spring:
+#  mvc:
+#    path-match:
+#      # Springfox使用的路径匹配是基于AntPathMatcher的，而Spring Boot 2.6.X使用的是PathPatternMatcher
+#      # 所以需要配置此参数
+#      matching-strategy: ant_path_matcher
+#  application:
+#    name: liu-user-service
+#  cloud:
+#    nacos:
+#      discovery:
+#        server-addr: 192.168.11.251:8848
+#        username: nacos
+#        password: nacos
+#        namespace: 33e90e1d-4a78-414c-8dea-28893135dd5a
+#        group: DEFAULT_GROUP
+#        weight: 1
+#
+############### 设置日志级别,ERROR/WARN/INFO/DEBUG,默认是INFO以上才显示  ##############
+#logging:
+#  level:
+#    root: INFO
+#  config: classpath:logConfig/logback-spring-dev.xml
+#  file:
+#    path: ./logs/user-logs
+#
+############### 开启knife4j的增强模式 ##############
+#knife4j:
+#  enable: true
