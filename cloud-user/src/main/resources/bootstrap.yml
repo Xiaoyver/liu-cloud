@@ -4,7 +4,7 @@ spring:
     active: @environment@
   # 应用配置
   application:
-    name: liu-order-service
+    name: liu-user-service
 
 #********** 上面的不需要环境区分 **********#
 #**********下面是环境区分,不同环境不同配置 **********#
