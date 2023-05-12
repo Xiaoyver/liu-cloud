@@ -16,6 +16,22 @@
 #        group: DEFAULT_GROUP
 #        weight: 1
 #      server-addr: 192.168.11.251:8848
+#    sentinel:
+#      transport:
+#        dashboard: 192.168.11.251:18080
+#        clientIp: 192.168.11.9 # 本机IP,注意这里的IP只是用来和Sentinel-dashboard通信,展示WEB页面的东西的,如果不看UI页面可以不配置
+#        port: 10000
+#      datasource:
+#        ds1:
+#          nacos:
+#            server-addr: 192.168.11.251:8848
+#            namespace: 33e90e1d-4a78-414c-8dea-28893135dd5a
+#            data-id: ${spring.application.name}-sentinel
+#            group-id: DEFAULT_GROUP
+#            data-type: json
+#            rule-type: gw-flow # 网关使用gw-flow,平常使用flow
+#      filter:
+#        enabled: false # Sentinel 网关流控默认的粒度是 route 不是URL粒度,为了在Sentinel控制台好看
 #    gateway:
 #      routes: #数组形式
 #        # 用户服务
