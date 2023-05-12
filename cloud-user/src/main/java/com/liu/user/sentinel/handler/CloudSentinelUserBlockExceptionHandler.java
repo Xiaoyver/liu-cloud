@@ -1,6 +1,5 @@
 package com.liu.user.sentinel.handler;
 
-import com.alibaba.csp.sentinel.adapter.spring.webflux.callback.BlockRequestHandler;
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityException;
@@ -12,17 +11,12 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.server.ServerResponse;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
-import java.util.List;
 
 /**
  * @author gdLiu
