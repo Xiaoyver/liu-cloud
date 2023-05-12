@@ -1,6 +1,8 @@
-package com.liu.gateway.sentinel.handler;
+package com.liu.user.sentinel.handler;
 
-import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.BlockRequestHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webflux.callback.BlockRequestHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityException;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowException;
@@ -17,6 +19,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.util.List;
 
 /**
@@ -26,29 +31,22 @@ import java.util.List;
 @Slf4j
 @Primary
 @Component
-public class CloudSentinelGatewayBlockExceptionHandler implements BlockRequestHandler {
+public class CloudSentinelUserBlockExceptionHandler implements BlockExceptionHandler {
 
     @Override
-    public Mono<ServerResponse> handleRequest(ServerWebExchange exchange, Throwable ex) {
-        if (acceptsHtml(exchange)) {
-            return htmlErrorResponse(ex);
-        }
-        // JSON result by default.
-        return ServerResponse.status(HttpStatus.TOO_MANY_REQUESTS)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .bodyValue(buildErrorResult(ex));
+    public void handle(HttpServletRequest request, HttpServletResponse response, BlockException e) throws Exception {
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        response.setStatus(HttpStatus.OK.value());
+        PrintWriter out = response.getWriter();
+        out.write(buildErrorResult(e));
+        out.flush();
+        out.close();
     }
 
-    private Mono<ServerResponse> htmlErrorResponse(Throwable ex) {
-        return ServerResponse.status(HttpStatus.TOO_MANY_REQUESTS)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .bodyValue(buildErrorResult(ex));
-    }
-
-    private String buildErrorResult(Throwable e) {
+    private String buildErrorResult(BlockException e) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("code", HttpStatus.TOO_MANY_REQUESTS.value());
-        jsonObject.put("data", "网关限流");
+        jsonObject.put("data", "用户限流");
         if (e instanceof FlowException) {
             jsonObject.put("message", "接口限流");
         } else if (e instanceof DegradeException) {
@@ -63,20 +61,5 @@ public class CloudSentinelGatewayBlockExceptionHandler implements BlockRequestHa
             jsonObject.put("message", "sentinel限制,异常捕获未定义");
         }
         return jsonObject.toJSONString();
-    }
-
-    /**
-     * Reference from {@code DefaultErrorWebExceptionHandler} of Spring Boot.
-     */
-    private boolean acceptsHtml(ServerWebExchange exchange) {
-        try {
-            List<MediaType> acceptedMediaTypes = exchange.getRequest().getHeaders().getAccept();
-            acceptedMediaTypes.remove(MediaType.ALL);
-            MediaType.sortBySpecificityAndQuality(acceptedMediaTypes);
-            return acceptedMediaTypes.stream()
-                    .anyMatch(MediaType.TEXT_HTML::isCompatibleWith);
-        } catch (InvalidMediaTypeException ex) {
-            return false;
-        }
     }
 }

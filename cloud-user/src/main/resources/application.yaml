@@ -18,7 +18,20 @@
 #        namespace: 33e90e1d-4a78-414c-8dea-28893135dd5a
 #        group: DEFAULT_GROUP
 #        weight: 1
-#
+#    sentinel:
+#      transport:
+#        dashboard: 192.168.11.251:18080
+#        clientIp: 192.168.11.9  # 如果本机有多个IP(多个网卡就会有多个),需要指定哪个IP
+#        port: 10000
+#      datasource:
+#        ds1:
+#          nacos:
+#            server-addr: 192.168.11.251:8848
+#            namespace: 33e90e1d-4a78-414c-8dea-28893135dd5a
+#            data-id: ${spring.application.name}-sentinel
+#            group-id: DEFAULT_GROUP
+#            data-type: json
+#            rule-type: flow
 ############### 设置日志级别,ERROR/WARN/INFO/DEBUG,默认是INFO以上才显示  ##############
 #logging:
 #  level:
